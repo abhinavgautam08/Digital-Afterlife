@@ -1,0 +1,66 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+backend/.venv/
+
+# Local databases and locks
+data/*.db
+data/*.db-*
+data/*.sqlite*
+data/cache/*
+!data/cache/.gitkeep
+
+# Personal memories, media, uploads and thumbnails
+data/memories/*
+!data/memories/.gitkeep
+data/thumbnails/*
+!data/thumbnails/.gitkeep
+
+# Cryptographic envelopes, keys, and backups
+data/security/*
+!data/security/.gitkeep
+data/migration_backups/*
+!data/migration_backups/.gitkeep
+*.da-backup
+*.enc
+
+# Vector store and semantic index data
+data/vector_store/*
+!data/vector_store/.gitkeep
+data/vector_store/**/*
+
+# Machine learning model weights and caches
+models/whisper/*
+!models/whisper/.gitkeep
+models/embeddings/*
+!models/embeddings/.gitkeep
+
+# Environment variables & local secrets
+.env
+*.env.local
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+.vite/
+*.local
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
