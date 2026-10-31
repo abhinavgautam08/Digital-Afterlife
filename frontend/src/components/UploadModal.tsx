@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Upload, AlertCircle, MapPin, Tag as TagIcon, Users, Calendar, Shield, FileCheck } from 'lucide-react';
+import { Upload, AlertCircle, MapPin, Tag as TagIcon, Users, Calendar, Shield, FileCheck } from 'lucide-react';
 import type { Person, Tag } from '../types';
 import { api, ApiError } from '../services/api';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from './ui/dialog';
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -187,31 +194,24 @@ export const UploadModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-2xl bg-[#0f121a] border border-[#d4af37]/35 shadow-2xl shadow-black p-6 sm:p-8">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#202738]">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto bg-[#0f121a] border border-[#d4af37]/35 p-6 sm:p-8 shadow-2xl">
+        <DialogHeader className="pb-4 border-b border-[#202738]">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-[#d4af37]/15 border border-[#d4af37]/30 text-[#d4af37]">
               <Upload className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-serif font-bold text-white">Preserve Artifact</h2>
-              <p className="text-xs text-[#8e9bb0]">
+              <DialogTitle className="text-xl font-serif font-bold text-white">Preserve Artifact</DialogTitle>
+              <DialogDescription className="text-xs text-[#8e9bb0]">
                 Stored locally with SHA-256 verification, safe EXIF parsing, and offline privacy.
-              </p>
+              </DialogDescription>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-[#8e9bb0] hover:text-white hover:bg-[#1a202e] transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        </DialogHeader>
 
         {errorMessage && (
-          <div className="mt-4 p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-start gap-2.5 text-xs text-rose-200">
+          <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-start gap-2.5 text-xs text-rose-200">
             <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
             <span className="flex-1">{errorMessage}</span>
           </div>
@@ -470,7 +470,7 @@ export const UploadModal = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };

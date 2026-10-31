@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
-import { X, Tag as TagIcon, Plus, Trash2, Edit2, Check, AlertCircle } from 'lucide-react';
+import { Tag as TagIcon, Plus, Trash2, Edit2, Check, AlertCircle } from 'lucide-react';
 import type { Tag } from '../types';
 import { api } from '../services/api';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from './ui/dialog';
 
 interface TagManagerModalProps {
   isOpen: boolean;
@@ -86,41 +93,33 @@ export const TagManagerModal = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-lg rounded-2xl bg-[#0f121a] border border-[#d4af37]/35 shadow-2xl shadow-black p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#202738]">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-lg bg-[#0f121a] border border-[#d4af37]/35 p-6 shadow-2xl">
+        <DialogHeader className="pb-4 border-b border-[#202738]">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-[#d4af37]/15 border border-[#d4af37]/30 text-[#d4af37]">
               <TagIcon className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-serif font-bold text-white">Manage Memory Tags</h2>
-              <p className="text-xs text-[#8e9bb0]">
+              <DialogTitle className="text-lg font-serif font-bold text-white">
+                Manage Memory Tags
+              </DialogTitle>
+              <DialogDescription className="text-xs text-[#8e9bb0]">
                 Organize memories into meaningful family themes and life chapters.
-              </p>
+              </DialogDescription>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-[#8e9bb0] hover:text-white hover:bg-[#1a202e] transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        </DialogHeader>
 
         {error && (
-          <div className="mt-4 p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-center gap-2 text-xs text-rose-300">
+          <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-center gap-2 text-xs text-rose-300">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Create Tag Form */}
-        <form onSubmit={handleCreate} className="mt-4 flex gap-2">
+        <form onSubmit={handleCreate} className="flex gap-2">
           <input
             type="text"
             value={newTagName}
@@ -137,8 +136,7 @@ export const TagManagerModal = ({
           </button>
         </form>
 
-        {/* Tags List */}
-        <div className="mt-5 max-h-72 overflow-y-auto space-y-2 pr-1">
+        <div className="max-h-72 overflow-y-auto space-y-2 pr-1">
           {isLoading ? (
             <p className="text-center py-6 text-xs text-[#8e9bb0]">Loading tags...</p>
           ) : tags.length === 0 ? (
@@ -160,61 +158,48 @@ export const TagManagerModal = ({
                     />
                     <button
                       onClick={() => handleSaveEdit(t.id)}
-                      className="p-1 rounded text-emerald-400 hover:bg-emerald-950/40"
+                      className="p-1 rounded bg-[#d4af37] text-black hover:bg-[#f3d87b]"
                     >
-                      <Check className="w-4 h-4" />
+                      <Check className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => setEditingId(null)}
-                      className="p-1 rounded text-[#8e9bb0] hover:bg-[#1a202e]"
+                      className="p-1 text-[#8e9bb0] hover:text-white"
                     >
-                      <X className="w-4 h-4" />
+                      Cancel
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-white">#{t.name}</span>
-                    {t.memories_count !== undefined && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#1a2233] text-[#8e9bb0]">
-                        {t.memories_count} {t.memories_count === 1 ? 'memory' : 'memories'}
+                  <>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-white">#{t.name}</span>
+                      <span className="px-1.5 py-0.5 rounded-full bg-[#151c28] text-[10px] text-[#8e9bb0]">
+                        {t.memories_count || 0}
                       </span>
-                    )}
-                  </div>
-                )}
-
-                {editingId !== t.id && (
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => handleStartEdit(t)}
-                      className="p-1.5 rounded-lg text-[#8e9bb0] hover:text-[#d4af37] hover:bg-[#161c28] transition-colors"
-                      title="Rename tag"
-                    >
-                      <Edit2 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(t.id, t.name)}
-                      className="p-1.5 rounded-lg text-[#8e9bb0] hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
-                      title="Delete tag"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleStartEdit(t)}
+                        className="p-1.5 rounded-lg text-[#8e9bb0] hover:text-white hover:bg-[#161c28] transition-colors"
+                        title="Edit tag"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(t.id, t.name)}
+                        className="p-1.5 rounded-lg text-[#8e9bb0] hover:text-rose-400 hover:bg-[#161c28] transition-colors"
+                        title="Delete tag"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             ))
           )}
         </div>
-
-        <div className="mt-5 pt-3 border-t border-[#1a202c] flex justify-end">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-medium text-[#8e9bb0] hover:text-white bg-[#141924] hover:bg-[#1a202e] transition-colors"
-          >
-            Done
-          </button>
-        </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
-

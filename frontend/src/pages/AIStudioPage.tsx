@@ -35,6 +35,13 @@ import type {
   SourceMemoryInfo
 } from '../types';
 import { api } from '../services/api';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '../components/ui/dialog';
 
 interface AIStudioPageProps {
   people?: Person[];
@@ -1385,92 +1392,92 @@ export const AIStudioPage = ({
           )}
 
           {/* Add Milestone Modal */}
-          {showAddEventModal && (
-            <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="p-6 rounded-3xl bg-[#0f131c] border border-[#202738] max-w-md w-full space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-base font-serif font-bold text-white">Add Life Milestone</h3>
-                  <button onClick={() => setShowAddEventModal(false)} className="text-[#6d7c92] hover:text-white">
-                    <X className="w-4 h-4" />
-                  </button>
+          <Dialog open={showAddEventModal} onOpenChange={setShowAddEventModal}>
+            <DialogContent className="p-6 rounded-3xl bg-[#0f131c] border border-[#202738] max-w-md w-full space-y-4 text-white">
+              <DialogHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <DialogTitle className="text-base font-serif font-bold text-white">Add Life Milestone</DialogTitle>
+                  <DialogDescription className="text-xs text-[#6d7c92]">
+                    Record an authenticated milestone on this person's timeline.
+                  </DialogDescription>
+                </div>
+              </DialogHeader>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="text-[11px] text-[#6d7c92] block mb-1">Event Title *</label>
+                  <input
+                    type="text"
+                    value={newEventTitle}
+                    onChange={(e) => setNewEventTitle(e.target.value)}
+                    placeholder="e.g., Graduation from University"
+                    className="w-full p-2.5 rounded-xl bg-[#080a0e] border border-[#1c2331] text-xs text-white"
+                  />
                 </div>
 
-                <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] text-[#6d7c92] block mb-1">Event Title *</label>
+                    <label className="text-[11px] text-[#6d7c92] block mb-1">Exact Date (Optional)</label>
+                    <input
+                      type="date"
+                      value={newEventDate}
+                      onChange={(e) => setNewEventDate(e.target.value)}
+                      className="w-full p-2.5 rounded-xl bg-[#080a0e] border border-[#1c2331] text-xs text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-[#6d7c92] block mb-1">Approximate Date</label>
                     <input
                       type="text"
-                      value={newEventTitle}
-                      onChange={(e) => setNewEventTitle(e.target.value)}
-                      placeholder="e.g., Graduation from University"
-                      className="w-full p-2.5 rounded-xl bg-[#080a0e] border border-[#1c2331] text-xs text-white"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[11px] text-[#6d7c92] block mb-1">Exact Date (Optional)</label>
-                      <input
-                        type="date"
-                        value={newEventDate}
-                        onChange={(e) => setNewEventDate(e.target.value)}
-                        className="w-full p-2.5 rounded-xl bg-[#080a0e] border border-[#1c2331] text-xs text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[11px] text-[#6d7c92] block mb-1">Approximate Date</label>
-                      <input
-                        type="text"
-                        value={newEventApproxDate}
-                        onChange={(e) => setNewEventApproxDate(e.target.value)}
-                        placeholder="e.g., Summer 1968"
-                        className="w-full p-2.5 rounded-xl bg-[#080a0e] border border-[#1c2331] text-xs text-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] text-[#6d7c92] block mb-1">Date Confidence</label>
-                    <select
-                      value={newEventConfidence}
-                      onChange={(e) => setNewEventConfidence(e.target.value as any)}
-                      className="w-full p-2.5 rounded-xl bg-[#080a0e] border border-[#1c2331] text-xs text-white"
-                    >
-                      <option value="exact">Exact</option>
-                      <option value="approximate">Approximate</option>
-                      <option value="unknown">Unknown</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] text-[#6d7c92] block mb-1">Description</label>
-                    <textarea
-                      value={newEventDesc}
-                      onChange={(e) => setNewEventDesc(e.target.value)}
-                      rows={3}
-                      placeholder="Brief description of this milestone..."
+                      value={newEventApproxDate}
+                      onChange={(e) => setNewEventApproxDate(e.target.value)}
+                      placeholder="e.g., Summer 1968"
                       className="w-full p-2.5 rounded-xl bg-[#080a0e] border border-[#1c2331] text-xs text-white"
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-3">
-                  <button
-                    onClick={() => setShowAddEventModal(false)}
-                    className="px-4 py-2 rounded-xl text-xs text-[#8e9bb0]"
+                <div>
+                  <label className="text-[11px] text-[#6d7c92] block mb-1">Date Confidence</label>
+                  <select
+                    value={newEventConfidence}
+                    onChange={(e) => setNewEventConfidence(e.target.value as any)}
+                    className="w-full p-2.5 rounded-xl bg-[#080a0e] border border-[#1c2331] text-xs text-white"
                   >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleAddManualEvent}
-                    className="px-5 py-2 rounded-xl text-xs font-bold bg-[#d4af37] text-black"
-                  >
-                    Save Milestone
-                  </button>
+                    <option value="exact">Exact</option>
+                    <option value="approximate">Approximate</option>
+                    <option value="unknown">Unknown</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[11px] text-[#6d7c92] block mb-1">Description</label>
+                  <textarea
+                    value={newEventDesc}
+                    onChange={(e) => setNewEventDesc(e.target.value)}
+                    rows={3}
+                    placeholder="Brief description of this milestone..."
+                    className="w-full p-2.5 rounded-xl bg-[#080a0e] border border-[#1c2331] text-xs text-white"
+                  />
                 </div>
               </div>
-            </div>
-          )}
+
+              <div className="flex items-center justify-end gap-3 pt-3">
+                <button
+                  onClick={() => setShowAddEventModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs text-[#8e9bb0] hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddManualEvent}
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-[#d4af37] text-black hover:bg-[#e6c250] transition-colors"
+                >
+                  Save Milestone
+                </button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       )}
 

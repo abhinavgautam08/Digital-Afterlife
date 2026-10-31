@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { X, UserPlus, AlertCircle } from 'lucide-react';
+import { UserPlus, AlertCircle } from 'lucide-react';
 import { api } from '../services/api';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from './ui/dialog';
 
 interface AddPersonModalProps {
   isOpen: boolean;
@@ -18,8 +25,6 @@ export const AddPersonModal: React.FC<AddPersonModalProps> = ({
   const [biography, setBiography] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,34 +55,32 @@ export const AddPersonModal: React.FC<AddPersonModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-lg rounded-2xl bg-[#0f121a] border border-[#d4af37]/30 shadow-2xl p-6 sm:p-8">
-        <div className="flex items-center justify-between pb-4 border-b border-[#202738]">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-lg bg-[#0f121a] border border-[#d4af37]/30 p-6 sm:p-8">
+        <DialogHeader className="pb-4 border-b border-[#202738]">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-[#d4af37]/15 border border-[#d4af37]/30 text-[#d4af37]">
               <UserPlus className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-serif font-bold text-white">Add Family Member / Individual</h2>
-              <p className="text-xs text-[#8e9bb0]">Connect memories with ancestors, relatives, or loved ones.</p>
+              <DialogTitle className="text-xl font-serif font-bold text-white">
+                Add Family Member / Individual
+              </DialogTitle>
+              <DialogDescription className="text-xs text-[#8e9bb0]">
+                Connect memories with ancestors, relatives, or loved ones.
+              </DialogDescription>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-[#8e9bb0] hover:text-white hover:bg-[#1a202e] transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        </DialogHeader>
 
         {errorMessage && (
-          <div className="mt-4 p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-start gap-2.5 text-xs text-rose-200">
+          <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-start gap-2.5 text-xs text-rose-200">
             <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
             <span>{errorMessage}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-[#8e9bb0] uppercase tracking-wider mb-1.5">
               Full Name *
@@ -136,8 +139,7 @@ export const AddPersonModal: React.FC<AddPersonModalProps> = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
-

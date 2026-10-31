@@ -12,6 +12,12 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import type { AIStatus, VaultStatus } from '../types';
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from './ui/tooltip';
 
 interface NavbarProps {
   currentTab: string;
@@ -84,65 +90,86 @@ export const Navbar = ({
           </nav>
 
           {/* Right Badges: Local Privacy, Vault Lock State, & AI Indicator */}
-          <div className="flex items-center gap-2.5">
-            {/* Vault Encryption Status Pill */}
-            {vaultStatus && (
-              <button
-                onClick={onOpenVaultModal}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${
-                  !vaultStatus.is_initialized
-                    ? 'bg-[#151a24] text-[#8e9bb0] border-[#222c3e] hover:border-[#384762]'
-                    : vaultStatus.is_unlocked
-                    ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/40 hover:bg-emerald-900/40'
-                    : 'bg-amber-950/40 text-amber-300 border-amber-600/40 hover:bg-amber-900/40 animate-pulse'
-                }`}
-                title={
-                  !vaultStatus.is_initialized
-                    ? 'Vault uninitialized - Click to setup encryption'
-                    : vaultStatus.is_unlocked
-                    ? 'Vault Unlocked - Click to manage or lock'
-                    : 'Vault Locked - Click to unlock memories'
-                }
-              >
-                {!vaultStatus.is_initialized ? (
-                  <ShieldAlert className="w-3.5 h-3.5 text-[#8e9bb0]" />
-                ) : vaultStatus.is_unlocked ? (
-                  <Unlock className="w-3.5 h-3.5 text-emerald-400" />
-                ) : (
-                  <Lock className="w-3.5 h-3.5 text-amber-400" />
-                )}
-                <span>
-                  {!vaultStatus.is_initialized
-                    ? 'Setup Vault'
-                    : vaultStatus.is_unlocked
-                    ? 'Vault Unlocked'
-                    : 'Vault Locked'}
-                </span>
-              </button>
-            )}
+          <TooltipProvider delayDuration={150}>
+            <div className="flex items-center gap-2.5">
+              {/* Vault Encryption Status Pill */}
+              {vaultStatus && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={onOpenVaultModal}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${
+                        !vaultStatus.is_initialized
+                          ? 'bg-[#151a24] text-[#8e9bb0] border-[#222c3e] hover:border-[#384762]'
+                          : vaultStatus.is_unlocked
+                          ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/40 hover:bg-emerald-900/40'
+                          : 'bg-amber-950/40 text-amber-300 border-amber-600/40 hover:bg-amber-900/40 animate-pulse'
+                      }`}
+                    >
+                      {!vaultStatus.is_initialized ? (
+                        <ShieldAlert className="w-3.5 h-3.5 text-[#8e9bb0]" />
+                      ) : vaultStatus.is_unlocked ? (
+                        <Unlock className="w-3.5 h-3.5 text-emerald-400" />
+                      ) : (
+                        <Lock className="w-3.5 h-3.5 text-amber-400" />
+                      )}
+                      <span>
+                        {!vaultStatus.is_initialized
+                          ? 'Setup Vault'
+                          : vaultStatus.is_unlocked
+                          ? 'Vault Unlocked'
+                          : 'Vault Locked'}
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {!vaultStatus.is_initialized
+                      ? 'Vault uninitialized - Click to setup encryption'
+                      : vaultStatus.is_unlocked
+                      ? 'Vault Unlocked - Click to manage or lock'
+                      : 'Vault Locked - Click to unlock memories'}
+                  </TooltipContent>
+                </Tooltip>
+              )}
 
-            <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#111622] border border-[#1e2738] text-[11px] text-[#93a2b7]">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Offline AES-256</span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#111622] border border-[#1e2738] text-[11px] text-[#93a2b7] cursor-help">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Offline AES-256</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Hardware-accelerated AES-256-GCM encryption with Argon2id KDF. No data leaves your machine.
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setCurrentTab('ai-studio')}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${
+                      aiStatus?.ollama_running
+                        ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/40'
+                        : 'bg-amber-950/30 text-amber-300 border-amber-600/30 hover:bg-amber-900/40'
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        aiStatus?.ollama_running ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+                      }`}
+                    />
+                    <span>{aiStatus?.ollama_running ? 'Ollama Online' : 'Ollama Offline'}</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {aiStatus?.ollama_running
+                    ? 'Local Ollama service active and ready for private inference.'
+                    : 'Local Ollama offline. Click to visit setup guide in AI Studio.'}
+                </TooltipContent>
+              </Tooltip>
             </div>
-
-            <button
-              onClick={() => setCurrentTab('ai-studio')}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${
-                aiStatus?.ollama_running
-                  ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/40'
-                  : 'bg-amber-950/30 text-amber-300 border-amber-600/30 hover:bg-amber-900/40'
-              }`}
-              title="Click to open AI Studio"
-            >
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  aiStatus?.ollama_running ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
-                }`}
-              />
-              <span>{aiStatus?.ollama_running ? 'Ollama Online' : 'Ollama Offline'}</span>
-            </button>
-          </div>
+          </TooltipProvider>
         </div>
 
         {/* Mobile Navigation */}

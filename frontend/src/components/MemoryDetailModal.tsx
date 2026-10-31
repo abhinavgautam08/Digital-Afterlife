@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import {
-  X,
   Calendar,
   Users,
   HardDrive,
@@ -22,10 +21,18 @@ import {
   RotateCw,
   UserCheck,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  X
 } from 'lucide-react';
 import type { Memory, Person, Transcript, TranscriptSegment, TranscriptionJob } from '../types';
 import { api } from '../services/api';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from './ui/dialog';
 
 interface MemoryDetailModalProps {
   memory: Memory | null;
@@ -361,41 +368,41 @@ export const MemoryDetailModal = ({
   const isJobActive = activeJob && ['queued', 'preprocessing', 'transcribing', 'diarizing'].includes(activeJob.status);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-2xl bg-[#0f131c] border border-[#232b3c] p-6 text-white shadow-2xl">
-        {/* Modal Header */}
-        <div className="flex items-start justify-between pb-4 border-b border-[#202738]">
-          <div className="flex-1 pr-4">
-            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-[#d4af37]/15 text-[#f3d87b] border border-[#d4af37]/30">
-                {memory.memory_type}
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-[#1a202c] text-[#8e9bb0]">
-                {memory.privacy_level}
-              </span>
-              {memory.location && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-[#8e9bb0]">
-                  <MapPin className="w-3 h-3 text-[#d4af37]" />
-                  {memory.location}
+    <Dialog open={!!memory} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto bg-[#0f131c] border border-[#232b3c] p-6 text-white shadow-2xl">
+        <DialogHeader className="pb-4 border-b border-[#202738] text-left">
+          <div className="flex items-start justify-between">
+            <div className="flex-1 pr-4">
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-[#d4af37]/15 text-[#f3d87b] border border-[#d4af37]/30">
+                  {memory.memory_type}
                 </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-[#1a202c] text-[#8e9bb0]">
+                  {memory.privacy_level}
+                </span>
+                {memory.location && (
+                  <span className="inline-flex items-center gap-1 text-[11px] text-[#8e9bb0]">
+                    <MapPin className="w-3 h-3 text-[#d4af37]" />
+                    {memory.location}
+                  </span>
+                )}
+              </div>
+
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="w-full text-xl font-serif font-bold text-white bg-[#0b0e14] border border-[#d4af37] rounded-lg px-3 py-1 focus:outline-none"
+                />
+              ) : (
+                <DialogTitle className="text-2xl font-serif font-bold text-white tracking-wide">
+                  {memory.title}
+                </DialogTitle>
               )}
             </div>
 
-            {isEditing ? (
-              <input
-                type="text"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                className="w-full text-xl font-serif font-bold text-white bg-[#0b0e14] border border-[#d4af37] rounded-lg px-3 py-1 focus:outline-none"
-              />
-            ) : (
-              <h2 className="text-2xl font-serif font-bold text-white tracking-wide">
-                {memory.title}
-              </h2>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mr-6">
             {!isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
@@ -413,6 +420,10 @@ export const MemoryDetailModal = ({
             </button>
           </div>
         </div>
+        <DialogDescription className="sr-only">
+          Detailed view, playback, transcription, and metadata for {memory.title}
+        </DialogDescription>
+      </DialogHeader>
 
         {saveError && (
           <div className="mt-4 p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 text-xs text-rose-300">
@@ -1119,7 +1130,7 @@ export const MemoryDetailModal = ({
             Close
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
