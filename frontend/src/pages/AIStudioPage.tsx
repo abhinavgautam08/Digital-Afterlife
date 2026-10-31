@@ -571,7 +571,7 @@ export const AIStudioPage = ({
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-1 overflow-x-auto pb-2 border-b border-[#181e2b] scrollbar-thin">
+      <div className="flex items-center gap-1.5 p-1.5 bg-[#0a0e16]/80 rounded-2xl border border-white/[0.06] overflow-x-auto scrollbar-thin">
         {[
           { id: 'biography', label: 'Biography Generator', icon: BookOpen },
           { id: 'story', label: 'Memory Stories', icon: Feather },
@@ -586,13 +586,13 @@ export const AIStudioPage = ({
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id as any)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium transition-all whitespace-nowrap ${
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap ${
                 isActive
-                  ? 'bg-[#d4af37]/15 text-[#f3d87b] border border-[#d4af37]/30 font-semibold shadow-md shadow-[#d4af37]/5'
-                  : 'text-[#8e9bb0] hover:text-white hover:bg-[#121622] border border-transparent'
+                  ? 'bg-[#182236] text-[#f3d87b] border border-[#d4af37]/35 font-semibold shadow-sm shadow-[#d4af37]/10'
+                  : 'text-[#8494ab] hover:text-white hover:bg-[#121724]'
               }`}
             >
-              <Icon className="w-3.5 h-3.5" />
+              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#f3d87b]' : 'text-[#627088]'}`} />
               {t.label}
             </button>
           );

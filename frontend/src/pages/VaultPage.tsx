@@ -148,30 +148,35 @@ export const VaultPage = ({
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#202738]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-wide">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2 py-0.5 rounded-md bg-[#d4af37]/15 border border-[#d4af37]/30 text-[10px] font-mono text-[#f3d87b] uppercase tracking-wider">
+              Encrypted Repository
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-serif font-bold text-white tracking-tight">
             Memory Vault
           </h1>
           <p className="text-xs sm:text-sm text-[#8e9bb0] mt-0.5 font-light">
-            {total} preserved multimedia memory artifacts in offline local storage
+            {total} preserved multimedia artifacts indexed and secured in offline local storage
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsTagModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#121722] hover:bg-[#1a2333] text-[#d4af37] border border-[#d4af37]/30 transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#121724] hover:bg-[#192233] text-[#f3d87b] border border-[#d4af37]/35 shadow-sm transition-all"
           >
-            <TagIcon className="w-4 h-4" />
-            Manage Tags
+            <TagIcon className="w-3.5 h-3.5 text-[#d4af37]" />
+            <span>Manage Tags</span>
           </button>
           <button
             onClick={onOpenUpload}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-[#d4af37] to-[#e68a00] text-black shadow-lg shadow-[#d4af37]/20 hover:brightness-110 active:scale-98 transition-all shrink-0"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-[#d4af37] via-[#e2ba3d] to-[#e68a00] text-black shadow-lg shadow-[#d4af37]/20 hover:brightness-110 active:scale-95 transition-all shrink-0"
           >
             <Upload className="w-4 h-4 stroke-[2.4]" />
-            Preserve Artifact
+            <span>Preserve Artifact</span>
           </button>
         </div>
       </div>
@@ -230,21 +235,21 @@ export const VaultPage = ({
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="p-4 rounded-2xl bg-[#0b0e14] border border-[#202738] space-y-3">
+      <div className="p-4 rounded-2xl card-modern-static space-y-3">
         <form onSubmit={handleSearchSubmit} className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-[#6d7c92] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#d4af37] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search across title, narrative notes, location, or extracted document text..."
-              className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#0f131c] border border-[#232b3c] focus:border-[#d4af37] focus:outline-none text-white text-xs sm:text-sm"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#080b12] border border-white/[0.08] focus:border-[#d4af37]/60 focus:outline-none text-white text-xs sm:text-sm placeholder-[#5e6f85]"
             />
           </div>
           <button
             type="submit"
-            className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#1a2233] hover:bg-[#232e44] text-[#f3d87b] border border-[#d4af37]/30 transition-colors"
+            className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#161d2c] hover:bg-[#1e273a] text-[#f3d87b] border border-[#d4af37]/40 shadow-sm transition-all"
           >
             Search
           </button>
@@ -406,7 +411,7 @@ export const VaultPage = ({
               <div
                 key={m.id}
                 onClick={() => onSelectMemory(m)}
-                className="group cursor-pointer rounded-2xl bg-[#0f131c] border border-[#202738] hover:border-[#d4af37]/50 overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black flex flex-col justify-between"
+                className="group cursor-pointer rounded-2xl card-modern overflow-hidden flex flex-col justify-between"
               >
                 <div>
                   {/* Media Visual Header */}

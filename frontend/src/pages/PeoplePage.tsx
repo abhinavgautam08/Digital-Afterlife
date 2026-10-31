@@ -100,15 +100,15 @@ export const PeoplePage = ({
             <div
               key={p.id}
               onClick={() => handleSelectPerson(p)}
-              className={`group cursor-pointer rounded-2xl bg-[#0f131c] border transition-all duration-200 p-5 flex flex-col justify-between hover:shadow-xl hover:-translate-y-0.5 ${
+              className={`group cursor-pointer rounded-2xl card-modern p-5 flex flex-col justify-between ${
                 selectedPerson?.id === p.id
-                  ? 'border-[#d4af37] shadow-lg shadow-[#d4af37]/10'
-                  : 'border-[#202738] hover:border-[#d4af37]/50'
+                  ? 'border-[#d4af37] shadow-xl shadow-[#d4af37]/15 ring-1 ring-[#d4af37]'
+                  : ''
               }`}
             >
               <div>
                 <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#141b28] border border-[#d4af37]/30 flex items-center justify-center text-[#d4af37] font-serif font-bold text-lg group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-2xl bg-[#141b28] border border-[#d4af37]/35 flex items-center justify-center text-[#f3d87b] font-serif font-bold text-lg group-hover:scale-105 transition-transform shadow-sm">
                     {p.full_name.charAt(0)}
                   </div>
                   {p.relationship && (
@@ -127,7 +127,7 @@ export const PeoplePage = ({
                 </p>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-[#1a202c] flex items-center justify-between text-xs">
+              <div className="mt-5 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs">
                 <span className="inline-flex items-center gap-1.5 text-[#d4af37] font-medium">
                   <Archive className="w-3.5 h-3.5" />
                   {p.memories_count ?? 0} Associated Memories
@@ -143,7 +143,7 @@ export const PeoplePage = ({
 
       {/* Selected Person Memories Drawer / Panel */}
       {selectedPerson && (
-        <div className="mt-8 p-6 rounded-2xl bg-[#0b0e14] border border-[#d4af37]/40 space-y-4">
+        <div className="mt-8 p-6 rounded-2xl card-modern-static border-[#d4af37]/40 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-[#d4af37]/15 border border-[#d4af37]/30 flex items-center justify-center text-[#d4af37] font-bold">

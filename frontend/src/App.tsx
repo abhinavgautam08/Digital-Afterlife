@@ -10,6 +10,7 @@ import { UploadModal } from './components/UploadModal';
 import { AddPersonModal } from './components/AddPersonModal';
 import { MemoryDetailModal } from './components/MemoryDetailModal';
 import { VaultLockModal } from './components/VaultLockModal';
+import { CommandPalette } from './components/CommandPalette';
 import type { Person, Memory, AIStatus, VaultStatus } from './types';
 import { api } from './services/api';
 
@@ -23,8 +24,21 @@ export function App() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
   const [isVaultModalOpen, setIsVaultModalOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
   const [selectedSeekTime, setSelectedSeekTime] = useState<number | null>(null);
+
+  // Global Keyboard Shortcuts (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleOpenMemoryWithSeek = (memory: Memory, seekTime?: number | null) => {
     setSelectedMemory(memory);
@@ -58,7 +72,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090c] text-[#e5e9f0] flex flex-col selection:bg-[#d4af37]/30 selection:text-[#f3d87b]">
+    <div className="min-h-screen bg-[#07090d] bg-ambient-mesh text-[#e5e9f0] flex flex-col selection:bg-[#d4af37]/30 selection:text-[#f3d87b]">
       {/* Top Navigation */}
       <Navbar
         currentTab={currentTab}
@@ -66,6 +80,8 @@ export function App() {
         aiStatus={aiStatus}
         vaultStatus={vaultStatus}
         onOpenVaultModal={() => setIsVaultModalOpen(true)}
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+        onOpenUpload={() => setIsUploadOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -150,6 +166,17 @@ export function App() {
         onClose={() => setIsVaultModalOpen(false)}
         vaultStatus={vaultStatus}
         onStatusChanged={loadGlobalData}
+      />
+
+      {/* Global Command Palette (⌘K) */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onNavigate={(tab) => setCurrentTab(tab)}
+        onOpenUpload={() => setIsUploadOpen(true)}
+        onOpenAddPerson={() => setIsAddPersonOpen(true)}
+        onOpenVaultModal={() => setIsVaultModalOpen(true)}
+        onSelectMemory={(m) => handleOpenMemoryWithSeek(m)}
       />
 
       {/* Minimal Footer */}
